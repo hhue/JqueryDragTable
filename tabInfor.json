@@ -1,0 +1,4 @@
+[
+	['GeoBasic','01_井位基础数据表(GeoBasic)',['井名(Well)','varchar(50)','区块(Block)','varchar(50)','钻井船(Rig)','nvarchar(100)','井类(Well_t_ID)','nvarchar(100)','作业者(Operator)','nvarchar(100)','井口回接(Well_ID)','nvarchar(100)','作业方式(Op_Mode_ID)']],
+	['GEO_Skew','02_井斜数据表(GEO_Skew)',['井名(Well)','varchar(50)','批次(GroupID)','float','水平位移(Displace)','float','坐标增量(东西)(H_Add)','float','狗腿度(Dogleg)','nvarchar(80)','狗腿度单位(Dogleg_Unit)','int','闭合方位(ClosePlace)','float']]
+]

@@ -1,0 +1,191 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>数据表实体图</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="css/er.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body role="document">
+  <div>
+        <h1>数据表实体图</h1>
+  </div>
+<!--   <div id="demoData"></div>
+  <div id="Tab_GeoBasic" name="Tab_GeoBasic" class="col-sm-2">
+    <ol class="list-group active">01_井位基础数据表(GeoBasic)
+      <li class="list-group-item">井名(Well)<span class="textRight">varchar(50)</span></li>
+      <li class="list-group-item">区块(Block)<span class="textRight">varchar(50)</span></li>
+      <li class="list-group-item">海域(Ocean)<span class="textRight">varchar(50)</span></li>
+      <li class="list-group-item">井别(TheType)<span class="textRight">varchar(50)</span></li>
+      <li class="list-group-item">井型(TheModel)<span class="textRight">varchar(50)</span></li>
+    </ol>
+  </div>
+  <div id="Tab_GEO_Skew" name="Tab_GEO_Skew" class="col-sm-2">
+    <ol class="list-group active">02_井斜数据表(GEO_Skew)
+      <li class="list-group-item">井名(Well)<span class="textRight">varchar(50)</span></li>
+      <li class="list-group-item">批次(GroupID)<span class="textRight">int</span></li>
+      <li class="list-group-item">井深(Depth)<span class="textRight">float</span>/li>
+      <li class="list-group-item">井斜(Angle)<span class="textRight">float</span></li>
+      <li class="list-group-item">方位(Azim)<span class="textRight">float</span></li>
+      <li class="list-group-item">垂深(V_Depth)<span class="textRight">float</span></li>
+      <li class="list-group-item">坐标增量(南北)(V_Add)<span class="textRight">float</span></li>
+      <li class="list-group-item">水平位移(Displace)<span class="textRight">float</span></li>      
+    </ol>
+  </div> -->
+  <div id="info"></div>
+  <div style="display:none"><button>测试JQuery获取Json数据</button></div>
+<script>
+(function($){
+    //拖拽插件,参数:id或object
+    $.Move = function(_this){
+        if(typeof(_this)=='object'){
+            _this=_this;
+        }else{
+            _this=$("#"+_this);
+        }
+        if(!_this){return false;}
+
+        _this.css({'position':'relative'}).hover(function(){$(this).css("cursor","move");},function(){$(this).css("cursor","default");})
+        var i=0;
+        _this.mousedown(function(e){//e鼠标事件
+            var offset = $(this).offset();            
+            var x = e.pageX - offset.left;
+            var y = e.pageY - offset.top;
+            if((i==0)){
+              x=x+offset.left;
+              y=y-offset.top;
+            }
+            i++;
+            // alert("x="+x+"pageX="+e.pageX+"offsetLeft="+offset.left+"i="+i);
+
+
+            _this.css({'opacity':'0.3'});
+            $(document).bind("mousemove",function(ev){
+            //绑定鼠标的移动事件，因为光标在DIV元素外面也要有效果，所以要用doucment的事件，而不用DIV元素的事件
+                _this.bind('selectstart',function(){return false;});
+                var _x = ev.pageX - x;//获得X轴方向移动的值
+                var _y = ev.pageY - y;//获得Y轴方向移动的值
+                _this.css({'left':_x+"px",'top':_y+"px"});
+            });
+        });
+ 
+        $(document).mouseup(function(){
+            $(this).unbind("mousemove");
+            _this.css({'opacity':''});
+        })
+    };
+    //测试JQuery方式获取json方式
+    $("button").click(function(){
+      $.getJSON("http://localhost/WebReturnFile/returnJson.aspx",function(result){
+        // $.each(result, function(i, field){
+        //   $("#info").append(field + " ");
+        // });
+        alert(result);
+      });
+    });
+})(jQuery);
+
+
+//解析json对象，并显示到页面中
+function analyseJson(data){
+
+  // data：存放示例的json数据
+  // var data=[['GeoBasic','01_井位基础数据表(GeoBasic)',['井名(Well)','varchar(50)','区块(Block)','varchar(50)']],['GEO_Skew','02_井斜数据表(GEO_Skew)',['井名(Well)','varchar(50)','批次(GroupID)','float']]];
+  // alert(data);
+
+  var j=0;
+  var tempStr="";
+    $("#info").html("");//清空info内容
+    $.each(data, function(i, item) {
+        tempStr="<div id='"+item[0]+"' class='col-sm-2'><ol class='list-group active'>" + item[1];
+        $.each(item[2],function(j,subItem){
+          if(j%2==0){//判断奇数行和偶数行的区别
+            tempStr=tempStr+"<li class='list-group-item'>"+subItem;
+          }else{
+            tempStr=tempStr+"<span class='textRight'>"+subItem+"</span></li>";
+          }
+        });
+        $("#info").append(tempStr+ "</ol></div>");
+    });
+};
+
+//================利用Ajax方式获取JSon  Start=============//
+//声明对象实例  
+var xmlhttp = false;  
+//产生一个XMLHttpRequest对象实例  
+getHTTPRequestObject();  
+  
+function getHTTPRequestObject()  
+{  
+    try  
+    {  
+        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");  
+    }  
+    catch(e)  
+    {  
+        try  
+        {  
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");  
+        }  
+        catch(E)  
+        {  
+            xmlhttp = false;  
+        }  
+    }  
+    if(!xmlhttp && typeof XMLHttpRequest!= 'undefined')  
+    {  
+        xmlhttp = new XMLHttpRequest();  
+    }  
+}  
+//回调处理  
+function callback()  
+{  
+        if(xmlhttp.readyState == 4)   
+        {  
+            if(xmlhttp.status == 200)  
+            {   
+               // 转换Json数据为javascript对象  
+              eval("var objResults =" + xmlhttp.responseText);              
+              var javaScriptObj = objResults; 
+              analyseJson(javaScriptObj);//由于xmlhttp是异步调用，只能在回调函数内部调用json数据解析
+
+              $.each($('#info').children('div'),function(i,item){
+                $.Move($('#'+item.id));
+              });
+            }   
+        }  
+}  
+//================利用Ajax方式获取JSon  End=============//
+
+//从服务器端加载json数据过来
+function loadJson(){
+  var url="http://localhost/WebReturnFile/tabInfor.json";
+// var url="http://localhost/WebReturnFile/returnJson.aspx";
+
+  //1.JQuery方式获取json数据
+  // $.getJSON(url,{id:1},function(data){
+  //     success:analyseJson(data);
+  // });
+
+  //2.利用Ajax方式获取json数据，这种方式比较可靠。
+  xmlhttp.open("GET", url, true);  
+  xmlhttp.onreadystatechange = callback;  
+  xmlhttp.send(null);  
+}
+
+//加载Json对象
+loadJson();
+//analyseJson();
+// $.each($('#info').children('div'),function(i,item){
+//   $.Move($('#'+item.id));
+// });
+// $.Move($('#Tab_GeoBasic'));
+// $.Move($('#Tab_GEO_Skew'));
+
+</script>
+</body>
+</html>

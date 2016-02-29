@@ -1,0 +1,19 @@
+.tableNameStyle{
+	background-color:white;
+	/*font-size: 15px;*/
+	font-weight: bold;
+	line-height: 10px;
+	margin-bottom: 1px;
+}
+ol.list-group.active{	
+	/*color:#fff;*/
+	font-size: 16px;
+	background-color:#428bca;
+	border-color:#428bca;
+}
+span.textRight{
+	text-align:right;	
+	position: absolute;
+	/*position: relative*/
+	right: 1px;
+}
